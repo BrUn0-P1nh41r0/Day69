@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired, URL
+from pyexpat.errors import messages
+from wtforms import StringField, SubmitField, PasswordField, BooleanField
+from wtforms.validators import DataRequired, URL, Email, EqualTo, Length
 from flask_ckeditor import CKEditorField
 
 
@@ -14,9 +15,22 @@ class CreatePostForm(FlaskForm):
 
 
 # TODO: Create a RegisterForm to register new users
-
+class RegisterForm(FlaskForm):
+    email = StringField("Email", validators=[DataRequired(), Length(max=100)])
+    name = StringField("Name", validators=[DataRequired(), Length(min=2, max=100)])
+    password = PasswordField("Password", validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField(
+        "Confirm Password",
+        validators=[DataRequired(), EqualTo("password" ,message="Passwords must match")])
+    submit = SubmitField("Register")
 
 # TODO: Create a LoginForm to login existing users
-
+class LoginForm(FlaskForm):
+    email = StringField("Email", validators=[DataRequired(), Length(max=100)])
+    password = PasswordField("Password", validators=[DataRequired(), Length(min=8)])
+    submit = SubmitField("Login")
 
 # TODO: Create a CommentForm so users can leave comments below posts
+class CommentForm(FlaskForm):
+    comment_text = CKEditorField("Comment", validators=[DataRequired(), Length(min=2)])
+    submit = SubmitField("Comment")
